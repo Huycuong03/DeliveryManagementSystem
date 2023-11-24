@@ -1,0 +1,167 @@
+.text{
+    -fx-font-family: "Segoe UI"
+}
+
+.nav-form{
+    -fx-background-color:linear-gradient(to top, #A75D5D, #F0997D)
+}
+
+.nav-btn{
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: #fff;
+    -fx-alignment:CENTER_LEFT;
+}
+
+.nav-btn-clicked{
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-cursor:hand;
+}
+
+.nav-btn:hover{
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-cursor:hand;
+}
+
+.main-pane{
+    -fx-background-color: #fff;
+    -fx-background-radius: 20px;
+}
+
+.card{
+    -fx-background-color: linear-gradient(to bottom, #A75D5D, #F0997D);
+    -fx-background-radius: 20px;
+}
+
+/* .order-form{
+    -fx-background-color: #fff; 
+    -fx-background-radius: 10px;
+} */
+
+
+/* .card-shadown{
+    -fx-background-color: #f1f1f1;
+} */
+
+.scroll-pane{
+    -fx-background-radius: 20px;
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.chart-legend-item text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #000;
+}
+
+
+.header-label{
+    -fx-font-family: Segoe UI;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #A75D5D
+}
+
+.tool-button{
+    -fx-background-color: #A75D5D;
+    -fx-background-radius: 5;
+    -fx-border-width: .4;
+    -fx-border-radius: 5;
+    -fx-border-color: transparent;
+    -fx-font-family: Segoe UI;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fff
+}
+
+.tool-button:hover{
+    -fx-cursor: hand
+}
+
+.combo-box{
+    -fx-background-color: transparent;
+    -fx-background-radius: 15;
+    -fx-border-width: .4;
+    -fx-border-radius: 15;
+    -fx-border-color: #787878;
+}
+
+.text-field{
+    -fx-background-color: transparent;
+    -fx-border-width: .4;
+    -fx-border-radius: 5;
+    -fx-border-color: #787878;
+}
+
+/* Table View Design */
+
+.table-view{
+    -fx-background-color: transparent;
+    -fx-border-width: .4;
+    -fx-border-radius: 5;
+    -fx-border-color: #787878;
+    -fx-padding: 0
+}
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to bottom, #A75D5D, #F0997D);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 5
+}
+
+.table-view .column-header{
+    -fx-background-color: transparent;
+    -fx-size: 40
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: #fff
+}
+
+/* .table-view .table-column{
+    -fx-alignment: center
+} */
+
+/* .text_view{
+    -fx-background-color: transparent;
+    -fx-border-width: .4;
+    -fx-border-radius: 5;
+    -fx-border-color: #787878;
+}
+
+.button{
+    -fx-background-color: #42d7f5;
+} */
+
+/* .tab-pane > .tab-header-area {
+  -fx-padding: 0;
+} */
+
+/* .tab-pane > .tab-header-area > .tab-header-background {
+  -fx-background-color: #E1E1E1, white;
+  -fx-background-insets: 0, 0 0 1px 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab {
+  -fx-background-color: white;
+  -fx-background-insets: 0 0 1px 0;
+  -fx-padding: 1.5em 1em;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab >.tab-container >.tab-label {
+  -fx-text-fill: #63B5F6;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+  -fx-background-color: #2092ED, white;
+  -fx-background-insets: 0, 0 0 2px 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
+  -fx-text-fill: #2095F3;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.focus-indicator {
+  -fx-opacity: 0;
+} */
