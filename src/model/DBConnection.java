@@ -3,6 +3,8 @@ package model;
 import java.sql.*;
 import java.time.YearMonth;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 
@@ -78,6 +80,20 @@ public class DBConnection {
             e.printStackTrace();
         }
         return dataSeries;
+    }
+
+    public ObservableList<Parcel> getParcelList(String filter){
+        ObservableList<Parcel> parcelList = FXCollections.observableArrayList();
+        try {
+            state = con.prepareStatement("select parcel#, weight, transport#, title, note, COD, COD_status, status, send_date, A.full_name as sender, B.full_name as recipient from parcel natural join sending, customer A, customer B where sender# = A.customer# and recipient# = B.customer# "+filter);
+            res = state.executeQuery();
+            while(res.next()){
+                parcelList.add(new Parcel(res));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return parcelList;
     }
 
 }
