@@ -10,12 +10,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -45,6 +47,9 @@ public class DashboardController implements Initializable{
 
     @FXML
     private ComboBox<String> monthComboBox;
+
+    @FXML
+    private CheckBox codCheckBox;
 
     @FXML
     private TextField newCOD;
@@ -186,6 +191,7 @@ public class DashboardController implements Initializable{
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         initComboBox();
+        newCOD.disableProperty().bind(codCheckBox.selectedProperty().not());
         resetHomePane();
         initParcelTable();
         initTrackingTable();
@@ -352,6 +358,46 @@ public class DashboardController implements Initializable{
     public void updateParcelInfo(){
         if(selectedParcel==null) return;
         db.updateParcel(parcelTitle.getText(), parcelNote.getText(), selectedParcel.getId());
+        resetParcelTable();
+    }
+
+    public void enableCOD(){
+        parcelCOD.setDisable(false);
+    }
+
+    public boolean isValidForm(){
+        if(senderFirstName.getText().isBlank()) return false;
+        if(senderLastName.getText().isBlank()) return false;
+        if(senderPhoneNumber.getText().isBlank()) return false;
+        if(senderZip.getText().isBlank()) return false;
+        if(senderAddress.getText().isBlank()) return false;
+
+        if(recipientFirstName.getText().isBlank()) return false;
+        if(recipientLastName.getText().isBlank()) return false;
+        if(recipientPhoneNumber.getText().isBlank()) return false;
+        if(recipientZip.getText().isBlank()) return false;
+        if(recipientAddress.getText().isBlank()) return false;
+
+        if(codCheckBox.selectedProperty().get()&&parcelCOD.getText().isBlank()) return false;
+
+        return (!newParcelWeight.getText().isBlank());
+    }
+
+    public void registerNewParcel(){        
+        if(!isValidForm()){
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText("Invalid Information");
+            alert.setContentText("You must fill in all mandatory information (*)");
+            alert.show();
+            return;
+        }
+        int cid = db.getCountCustomer();
+        int pid = db.getCountParcel();
+        Customer sender = new Customer(cid, senderFirstName.getText()+" "+senderLastName.getText(), senderPhoneNumber.getText(), senderZip.getText(), senderAddress.getText(), senderEmail.getText());
+        Customer recipient = new Customer(cid+1, recipientFirstName.getText()+" "+recipientLastName.getText(), recipientPhoneNumber.getText(), recipientZip.getText(), recipientAddress.getText(), recipientEmail.getText());
+        Parcel parcel = new Parcel(pid, Integer.parseInt(newParcelWeight.getText()), transportComboBox.getSelectionModel().getSelectedIndex(), newParceTitle.getText(), newParcelNote.getText(), (codCheckBox.selectedProperty().get())?Integer.parseInt(parcelCOD.getText()):null);
+        db.registerNewParcel(sender, recipient, parcel);
     }
 
 }

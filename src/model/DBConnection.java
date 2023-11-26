@@ -1,12 +1,13 @@
 package model;
 
 import java.sql.*;
-import java.time.YearMonth;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 
 public class DBConnection {
     private Connection con;
@@ -134,14 +135,89 @@ public class DBConnection {
 
     public void updateParcel(String title, String note, int parcelId){
         try {
-            state = con.prepareStatement("update parcel set title = ?, note = ? where parcel# = ?");
+            PreparedStatement state = con.prepareStatement("update parcel set title = ?, note = ? where parcel# = ?");
             state.setString(1, title);
             state.setString(2, note);
             state.setInt(3, parcelId);
-            state.executeUpdate();
+            state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private Alert alert = new Alert(null);
+
+    public int getCountCustomer(){
+        try {
+            res = con.createStatement().executeQuery("select count(*) as num_customer from customer");
+            res.next();
+            return res.getInt("num_customer");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getCountParcel(){
+        try {
+            res = con.createStatement().executeQuery("select count(*) as num_parcel from parcel");
+            res.next();
+            return res.getInt("num_parcel");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean isNewCustomer(Customer customer){
+        try {
+            state = con.prepareStatement("select * from customer where full_name = ? and phone# = ?");
+            state.setString(1, customer.getName());
+            state.setString(2, customer.getPhoneNumber());
+            return (!state.executeQuery().next());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void registerNewParcel(Customer sender, Customer recipient, Parcel parcel){
+        try {
+            Statement temp = con.createStatement();
+            String senderSql = createRegisterCustomerSql(sender);
+            if(senderSql==null) return;
+            else temp.addBatch(senderSql);
+
+            String recipientSql = createRegisterCustomerSql(recipient);
+            if(recipientSql==null) return;
+            else temp.addBatch(recipientSql);
+
+            String sqlFormat = "insert into parcel values (%d,%d,%d,'%s','%s',%s,%s,0)"; 
+            temp.addBatch(String.format(sqlFormat, parcel.getId(),parcel.getWeight(),parcel.getTransport(),parcel.getTitle(),parcel.getNote(),(parcel.getCOD()==null)?null:parcel.getCOD(),(parcel.getCOD()==null)?null:0));   
+            sqlFormat = "insert into sending (sending#,send_date,sender#,recipient#,parcel#) values (%d,to_date('%s','yyyy-mm-dd'),%d,%d,%d)";
+            temp.addBatch(String.format(sqlFormat, parcel.getId(),parcel.getSendDate(),sender.getId(),recipient.getId(),parcel.getId()));
+
+            temp.executeBatch();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String createRegisterCustomerSql(Customer customer){
+        if(isNewCustomer(customer)){
+            String sqlFormat = "insert into customer values(%d,'%s','%s','%s','%s',null,null,'%s')";
+            return String.format(sqlFormat, customer.getId(),customer.getName(),customer.getPhoneNumber(),customer.getZip(),customer.getAddress(),customer.getEmail());           
+        }else{
+            alert.setAlertType(AlertType.CONFIRMATION);
+            alert.setHeaderText("Customer "+customer.getName()+"'s account already existed");
+            alert.setContentText("Do you want to update customer's information?");
+            if(alert.showAndWait().get()==ButtonType.OK){
+                String sqlFormat = "update customer set zip# = '%s', address = '%s', email = '%s' where full_name = '%s' and phone# ='%s'";
+                return String.format(sqlFormat, customer.getZip(),customer.getAddress(),customer.getEmail(),customer.getName(),customer.getPhoneNumber());                                            
+            }
+        }       
+        return null;
     }
 
 }

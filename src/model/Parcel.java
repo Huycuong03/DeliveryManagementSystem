@@ -3,8 +3,7 @@ package model;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import dashboard.DashboardController;
+import java.time.LocalDate;
 
 public class Parcel {
     private int id;
@@ -18,6 +17,16 @@ public class Parcel {
     private String sender;
     private String recipient;
     private Date sendDate;
+
+    public Parcel(int id, int weight, int transport, String title, String note, Integer COD) {
+        this.id = id;
+        this.weight = weight;
+        this.transport = transport;
+        this.title = title;
+        this.note = note;
+        this.COD = COD;
+        this.sendDate = Date.valueOf(LocalDate.now());
+    }
 
     public int getId() {
         return id;
