@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import dashboard.DashboardController;
+
 public class Parcel {
     private int id;
     private int weight;
@@ -46,9 +48,7 @@ public class Parcel {
     }
 
     public String getStatus() {
-        switch (status) {
-            // case 0 -> ;
-        }
+        return dashboard.DashboardController.STATUS[status+1];
     }
 
     public String getSender() {
@@ -69,8 +69,8 @@ public class Parcel {
         this.transport = parcelInfo.getInt("transport#");
         this.title = parcelInfo.getString("title");
         this.note = parcelInfo.getString("note");
-        this.COD = parcelInfo.getInt("COD");
-        this.CODStatus = parcelInfo.getInt("COD_status");
+        this.COD = (parcelInfo.getObject("COD")==null)?null:parcelInfo.getInt("COD");
+        this.CODStatus = (parcelInfo.getObject("COD_status")==null)?null:parcelInfo.getInt("COD_status");
         this.status = parcelInfo.getInt("status");
         this.sender = parcelInfo.getString("sender");
         this.recipient = parcelInfo.getString("recipient");

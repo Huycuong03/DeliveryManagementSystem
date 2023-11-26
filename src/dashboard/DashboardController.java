@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -88,7 +89,7 @@ public class DashboardController implements Initializable{
     private TextField parcelTitle;
 
     @FXML
-    private TextField parcelWeight;
+    private TextField parcelCOD;
 
     @FXML
     private TextField recipientAddress;
@@ -157,16 +158,16 @@ public class DashboardController implements Initializable{
     private Text totalParcel;
 
     @FXML
-    private TableColumn<?, ?> trackAddressColumn;
+    private TableColumn<TrackingLog, String> trackDstColumn;
 
     @FXML
-    private TableColumn<?, ?> trackDateColumn;
+    private TableColumn<TrackingLog, Date> trackDateColumn;
 
     @FXML
-    private TableView<?> trackingTable;
+    private TableView<TrackingLog> trackingTable;
 
     @FXML
-    private TableColumn<?, ?> tracskNoteColumn;
+    private TableColumn<TrackingLog, String> trackNoteColumn;
 
     @FXML
     private ComboBox<String> transportComboBox;
@@ -187,14 +188,16 @@ public class DashboardController implements Initializable{
         initComboBox();
         resetHomePane();
         initParcelTable();
+        initTrackingTable();
     }
 
-    final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
-    final String[] TRANSPORT = {"Saving", "Standard", "Express", "Instant"};
-    final String[] SEARCH_OPTION = {"ID", "Title", "Sender", "Recipient"};
-    final String[] STATUS = {"All", "In-Stock", "Transporting", "Delivering", "For Re-delivery", "Delivered", "Return Processing", "For Return", "Returning", "Returned"};
-    final String[] COD = {"All", "No COD", "For Collection", "Collected", "Returning","Returned","Storing"};
+    public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+    public static final String[] TRANSPORT = {"Saving", "Standard", "Express", "Instant"};
+    public static final String[] SEARCH_OPTION = {"ID", "Title", "Sender", "Recipient"};
+    public static final String[] STATUS = {"All", "In-Stock", "Transporting", "Delivering", "For Re-delivery", "Delivered", "Return Processing", "For Return", "Returning", "Returned"};
+    public static final String[] COD = {"All", "No COD", "For Collection", "Collected", "Returning","Returned","Storing"};
     
+// Initializations
 
     public void initComboBox(){
         ObservableList<String> comboBoxItems = FXCollections.observableArrayList(MONTHS);
@@ -217,6 +220,25 @@ public class DashboardController implements Initializable{
         codComboBox.setItems(comboBoxItems);
         codComboBox.setValue(COD[0]);
     }
+
+    public void initParcelTable(){
+        parcelIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        parcelSendDateColumn.setCellValueFactory(new PropertyValueFactory<>("sendDate"));
+        parcelSenderColumn.setCellValueFactory(new PropertyValueFactory<>("sender"));
+        parcelRecipientColumn.setCellValueFactory(new PropertyValueFactory<>("recipient"));
+        parcelStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        parcelTable.setItems(db.getParcelList(""));
+    }
+
+    public void initTrackingTable(){
+        trackDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        trackDstColumn.setCellValueFactory(new PropertyValueFactory<>("destination"));
+        trackNoteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
+    }
+
+
+// Event Handling
 
     public void resetHomePane(){
         int month = monthComboBox.getSelectionModel().getSelectedIndex()+1;
@@ -260,24 +282,16 @@ public class DashboardController implements Initializable{
         reportPane.setVisible(true);
     }
 
-    public void initParcelTable(){
-        parcelIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        parcelSendDateColumn.setCellValueFactory(new PropertyValueFactory<>("sendDate"));
-        parcelSenderColumn.setCellValueFactory(new PropertyValueFactory<>("sender"));
-        parcelRecipientColumn.setCellValueFactory(new PropertyValueFactory<>("recipient"));
-        parcelStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        parcelTable.setItems(db.getParcelList(""));
-    }
-
     public void resetParcelTable(){
         int searchOption = searchComboBox.getSelectionModel().getSelectedIndex();
         int statusFilterOption = statusComboBox.getSelectionModel().getSelectedIndex();
         int codfilterOption = codComboBox.getSelectionModel().getSelectedIndex();
+        String weightFrom = fromWeight.getText();
+        String weightTo = toWeight.getText();
         String searchKeyword = searchBar.getText();
 
         String filter = "";
-        if(!searchKeyword.equals("")){
+        if(!searchKeyword.isBlank()){
             switch(searchOption){
                 case 0 -> filter += " and parcel# = "+searchKeyword;
                 case 1 -> filter += " and title like '%"+searchKeyword+"%'";
@@ -296,7 +310,48 @@ public class DashboardController implements Initializable{
                 filter += " and COD_status = " + (codfilterOption-2);
             }
         }
-        System.out.println(filter);
+        
+        if(!weightFrom.isBlank()){
+            filter += " and weight >= "+weightFrom;
+        }
+
+        if(!weightTo.isBlank()){
+            filter += " and weight <="+weightTo;
+        }
+
         parcelTable.setItems(db.getParcelList(filter));
     }
+
+    private Parcel selectedParcel = null;
+
+    public void selectParcelTable(){
+        selectedParcel = parcelTable.getSelectionModel().getSelectedItem();
+        if(selectedParcel==null) return;
+
+        if(selectedParcel.getTitle()==null){
+            parcelTitle.setText(null);
+        }else{
+            parcelTitle.setText(selectedParcel.getTitle());
+        }
+
+        if(selectedParcel.getCOD()==null){
+            parcelCOD.setText(null);
+        }else{
+            parcelCOD.setText(String.valueOf(selectedParcel.getCOD()));
+        }
+        
+        if(selectedParcel.getNote()==null){
+            parcelNote.setText(null);
+        }else{
+            parcelNote.setText(selectedParcel.getNote());
+        }
+
+        trackingTable.setItems(db.getTrackingLog(selectedParcel.getId()));
+    }
+
+    public void updateParcelInfo(){
+        if(selectedParcel==null) return;
+        db.updateParcel(parcelTitle.getText(), parcelNote.getText(), selectedParcel.getId());
+    }
+
 }

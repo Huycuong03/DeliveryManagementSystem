@@ -96,4 +96,52 @@ public class DBConnection {
         return parcelList;
     }
 
+    public ObservableList<TrackingLog> getTrackingLog(int parcelId){
+        ObservableList<TrackingLog> trackingLogList = FXCollections.observableArrayList();
+        try {
+            state = con.prepareStatement("select send_date, address, warehouse.wh# from sending natural join parcel natural join packing, warehouse where packing.wh# = warehouse.wh# and parcel# = ?");
+            state.setInt(1, parcelId);
+            res = state.executeQuery();
+            while(res.next()){
+                trackingLogList.add(new TrackingLog(res.getDate("send_date"), String.format("WH%02d (%s)", res.getInt("wh#"), res.getString("address")), null));
+            }
+
+            state = con.prepareStatement("select * from packing where parcel# = ?");
+            state.setInt(1, parcelId);
+            res = state.executeQuery();
+            PreparedStatement tmp = con.prepareStatement("select * from transition, warehouse where  transition.wh# = ? and transition.pack_date = to_date(?,'dd-mm-yy') and transition.cargo# = ? and transition.dst_wh# = warehouse.wh#");
+            while(res.next()){
+                tmp.setInt(1, res.getInt("wh#"));
+                tmp.setDate(2, res.getDate("pack_date"));
+                tmp.setInt(3, res.getInt("cargo#"));
+                ResultSet temp = tmp.executeQuery();
+                while(temp.next()){
+                    trackingLogList.add(new TrackingLog(temp.getDate("transit_date"), String.format("WH%02d (%s)", temp.getInt("dst_wh#"), temp.getString("address")), temp.getString("note")));
+                }
+            }
+
+            state = con.prepareStatement("select * from delivery join parcel using (parcel#) natural join sending, customer where recipient# = customer# and parcel# = ?");
+            state.setInt(1, parcelId);
+            res = state.executeQuery();
+            while(res.next()){
+                trackingLogList.add(new TrackingLog(res.getDate("delivery_date"), res.getString("address"), res.getString("note")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trackingLogList;
+    }
+
+    public void updateParcel(String title, String note, int parcelId){
+        try {
+            state = con.prepareStatement("update parcel set title = ?, note = ? where parcel# = ?");
+            state.setString(1, title);
+            state.setString(2, note);
+            state.setInt(3, parcelId);
+            state.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

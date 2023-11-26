@@ -432,7 +432,7 @@
                                  <children>
                                     <VBox layoutX="31.0" layoutY="36.0" prefHeight="705.0" prefWidth="564.0" AnchorPane.bottomAnchor="37.60000000000002" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="464.19999999999993" AnchorPane.topAnchor="36.0">
                                        <children>
-                                          <TableView fx:id="parcelTable" fixedCellSize="0.0" prefHeight="706.0" prefWidth="564.0" stylesheets="@Default_Style.css">
+                                          <TableView fx:id="parcelTable" fixedCellSize="0.0" onMouseClicked="#selectParcelTable" prefHeight="706.0" prefWidth="564.0" stylesheets="@Default_Style.css">
                                             <columns>
                                               <TableColumn fx:id="parcelIdColumn" prefWidth="46.40005224943161" text="ID" />
                                                 <TableColumn fx:id="parcelSendDateColumn" prefWidth="96.7999382019043" text="Send Date" />
@@ -487,7 +487,7 @@
                                                             <Insets left="16.0" />
                                                          </HBox.margin>
                                                       </Button>
-                                                      <TextField fx:id="fromWeight" layoutX="219.0" layoutY="10.0" prefHeight="25.0" prefWidth="50.0" promptText="0">
+                                                      <TextField fx:id="fromWeight" layoutX="219.0" layoutY="10.0" onAction="#resetParcelTable" prefHeight="25.0" prefWidth="50.0" promptText="0">
                                                          <HBox.margin>
                                                             <Insets left="4.0" />
                                                          </HBox.margin>
@@ -500,7 +500,7 @@
                                                             <Insets left="4.0" />
                                                          </HBox.margin>
                                                       </Label>
-                                                      <TextField fx:id="toWeight" prefHeight="25.0" prefWidth="50.0" promptText="0">
+                                                      <TextField fx:id="toWeight" onAction="#resetParcelTable" prefHeight="25.0" prefWidth="50.0" promptText="0">
                                                          <HBox.margin>
                                                             <Insets left="4.0" />
                                                          </HBox.margin>
@@ -549,12 +549,12 @@
                                                       </HBox>
                                                       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                          <children>
-                                                            <Label alignment="TOP_LEFT" prefHeight="17.0" prefWidth="46.0" text="Weight">
+                                                            <Label alignment="TOP_LEFT" prefHeight="18.0" prefWidth="30.0" text="COD">
                                                                <HBox.margin>
                                                                   <Insets />
                                                                </HBox.margin>
                                                             </Label>
-                                                            <TextField fx:id="parcelWeight" prefHeight="25.0" prefWidth="60.0">
+                                                            <TextField fx:id="parcelCOD" editable="false" prefHeight="25.0" prefWidth="60.0">
                                                                <HBox.margin>
                                                                   <Insets left="8.0" />
                                                                </HBox.margin>
@@ -573,7 +573,7 @@
                                                                   <Insets left="10.0" right="10.0" top="8.0" />
                                                                </VBox.margin>
                                                             </TextArea>
-                                                            <Button mnemonicParsing="false" text="Update" textFill="WHITE">
+                                                            <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateParcelInfo" text="Update" textFill="WHITE">
                                                                <VBox.margin>
                                                                   <Insets left="10.0" top="8.0" />
                                                                </VBox.margin>
@@ -601,9 +601,9 @@
                                                 </Label>
                                                 <TableView fx:id="trackingTable" prefHeight="285.0" prefWidth="378.0" stylesheets="@Default_Style.css">
                                                   <columns>
-                                                    <TableColumn fx:id="trackDateColumn" prefWidth="108.26665723323822" text="Date" />
-                                                    <TableColumn fx:id="trackAddressColumn" prefWidth="167.4666976928711" text="Address" />
-                                                      <TableColumn fx:id="tracskNoteColumn" prefWidth="105.3333740234375" text="Note" />
+                                                    <TableColumn fx:id="trackDateColumn" prefWidth="84.79998242855072" text="Date" />
+                                                    <TableColumn fx:id="trackDstColumn" prefWidth="187.2000961303711" text="Destination" />
+                                                      <TableColumn fx:id="trackNoteColumn" prefWidth="105.3333740234375" text="Note" />
                                                   </columns>
                                                    <VBox.margin>
                                                       <Insets left="10.0" right="10.0" />
