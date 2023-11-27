@@ -4,6 +4,9 @@ import java.net.URL;
 import java.sql.Date;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -186,20 +190,27 @@ public class DashboardController implements Initializable{
     @FXML
     private TextField weightRate;
 
+    @FXML
+    private TextField parcelWeight;
+
     private DBConnection db = new DBConnection();
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         initComboBox();
         newCOD.disableProperty().bind(codCheckBox.selectedProperty().not());
+        senderZipBill.textProperty().bind(senderZip.textProperty());
+        recipientZipBill.textProperty().bind(recipientZip.textProperty());
+        selectTransport();
+        getParcelWeightRate();
         resetHomePane();
         initParcelTable();
         initTrackingTable();
     }
 
     public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
-    public static final String[] TRANSPORT = {"Saving", "Standard", "Express", "Instant"};
-    public static final String[] SEARCH_OPTION = {"ID", "Title", "Sender", "Recipient"};
+    public static final String[] TRANSPORT = {"Standard", "Saving", "Express", "Instant"};
+    public static final String[] SEARCH_OPTION = {"ID", "Title", "Sender", "Recipient","Send Date"};
     public static final String[] STATUS = {"All", "In-Stock", "Transporting", "Delivering", "For Re-delivery", "Delivered", "Return Processing", "For Return", "Returning", "Returned"};
     public static final String[] COD = {"All", "No COD", "For Collection", "Collected", "Returning","Returned","Storing"};
     
@@ -303,6 +314,7 @@ public class DashboardController implements Initializable{
                 case 1 -> filter += " and title like '%"+searchKeyword+"%'";
                 case 2 -> filter += " and A.full_name like '%"+searchKeyword+"%'";
                 case 3 -> filter += " and B.full_name like '%"+searchKeyword+"%'";
+                case 4 -> filter += " and to_char(send_date,'yyyy-mm-dd') like '%"+searchKeyword+"%'";
             }
         }
 
@@ -333,6 +345,8 @@ public class DashboardController implements Initializable{
     public void selectParcelTable(){
         selectedParcel = parcelTable.getSelectionModel().getSelectedItem();
         if(selectedParcel==null) return;
+
+        parcelWeight.setText(String.valueOf(selectedParcel.getWeight()));
 
         if(selectedParcel.getTitle()==null){
             parcelTitle.setText(null);
@@ -365,7 +379,30 @@ public class DashboardController implements Initializable{
         parcelCOD.setDisable(false);
     }
 
-    public boolean isValidForm(){
+    public void selectTransport(){
+        transportFee.setText(String.valueOf((transportComboBox.getSelectionModel().getSelectedIndex()+1)*100));
+        reCalculateBill();
+    }
+
+    public void getParcelWeightRate(){
+        int rate = (isNaturalNumber(newParcelWeight.getText()))?(Integer.parseInt(newParcelWeight.getText())/500)+1:0;
+        weightRate.setText(String.valueOf(rate));
+        reCalculateBill();
+    }
+
+    public void reCalculateBill(){
+        if(!senderZip.getText().isBlank()&&!recipientZip.getText().isBlank()&&isValidZip(senderZip.getText())&&isValidZip(recipientZip.getText())){
+            int distance = Math.abs(Integer.parseInt(senderZip.getText())-Integer.parseInt(recipientZip.getText()));
+            customerDistance.setText(String.valueOf(distance));
+            int fee = distance*Integer.parseInt(transportFee.getText())*Integer.parseInt(weightRate.getText())/100;
+            totalFee.setText(String.valueOf(fee));
+        }else{
+            customerDistance.setText("0");
+            totalFee.setText("0");
+        }
+    }
+
+    public boolean isFilledForm(){
         if(senderFirstName.getText().isBlank()) return false;
         if(senderLastName.getText().isBlank()) return false;
         if(senderPhoneNumber.getText().isBlank()) return false;
@@ -378,26 +415,107 @@ public class DashboardController implements Initializable{
         if(recipientZip.getText().isBlank()) return false;
         if(recipientAddress.getText().isBlank()) return false;
 
-        if(codCheckBox.selectedProperty().get()&&parcelCOD.getText().isBlank()) return false;
+        if(codCheckBox.selectedProperty().get()) if(newCOD.getText().isBlank()) return false;
 
         return (!newParcelWeight.getText().isBlank());
     }
 
-    public void registerNewParcel(){        
-        if(!isValidForm()){
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error Message");
-            alert.setHeaderText("Invalid Information");
-            alert.setContentText("You must fill in all mandatory information (*)");
+    public boolean isValidPhoneNumber(String phoneNumber){
+        return phoneNumber.matches("[0-9]{10}");
+    }
+
+    public boolean isValidZip(String zip){
+        return zip.matches("[0-9]{5}");
+    }
+
+    public boolean isNaturalNumber(String number){
+        if(!number.matches("[0-9]{1,6}")) return false;
+        return (Integer.parseInt(number)>=0);
+    }
+
+    public boolean isValidForm(){
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error Message");
+        alert.setHeaderText("Invalid Information");
+
+        if(!isFilledForm()){          
+            alert.setContentText("You must fill in all the mandatory information (*)");
             alert.show();
-            return;
+            return false;
         }
+
+        if(!isValidPhoneNumber(senderPhoneNumber.getText())||!isValidPhoneNumber(recipientPhoneNumber.getText())){
+            alert.setContentText("Invalid value for phone number");
+            alert.show();
+            return false;
+        }
+
+        if(!isValidZip(senderZip.getText())||!isValidZip(recipientZip.getText())){
+            alert.setContentText("Invalid value for zip number");
+            alert.show();
+            return false;
+        }
+
+        if(!isNaturalNumber(newParcelWeight.getText())){
+            alert.setContentText("Invalid value for parcel weight");
+            alert.show();
+            return false;
+        }
+
+        if(codCheckBox.selectedProperty().get()&&!isNaturalNumber(newCOD.getText())){
+            alert.setContentText("Invalid value for COD");
+            alert.show();
+            return false;
+        }       
+
+        return true;
+    }
+
+    public void clearNewParcel(){
+        senderFirstName.setText("");
+        senderLastName.setText("");
+        senderPhoneNumber.setText("");
+        senderEmail.setText("");
+        senderZip.setText("");
+        senderAddress.setText("");
+
+        recipientFirstName.setText("");
+        recipientLastName.setText("");
+        recipientPhoneNumber.setText("");
+        recipientEmail.setText("");
+        recipientZip.setText("");
+        recipientAddress.setText("");
+
+        newParceTitle.setText("");
+        newParcelNote.setText("");
+        newParcelWeight.setText("");
+        codCheckBox.selectedProperty().set(false);
+        newCOD.setText("");
+        transportComboBox.setValue(TRANSPORT[0]);
+
+        getParcelWeightRate();
+    }
+
+
+
+    public void registerNewParcel(){        
+        if(!isValidForm()) return;
+
         int cid = db.getCountCustomer();
         int pid = db.getCountParcel();
         Customer sender = new Customer(cid, senderFirstName.getText()+" "+senderLastName.getText(), senderPhoneNumber.getText(), senderZip.getText(), senderAddress.getText(), senderEmail.getText());
         Customer recipient = new Customer(cid+1, recipientFirstName.getText()+" "+recipientLastName.getText(), recipientPhoneNumber.getText(), recipientZip.getText(), recipientAddress.getText(), recipientEmail.getText());
-        Parcel parcel = new Parcel(pid, Integer.parseInt(newParcelWeight.getText()), transportComboBox.getSelectionModel().getSelectedIndex(), newParceTitle.getText(), newParcelNote.getText(), (codCheckBox.selectedProperty().get())?Integer.parseInt(parcelCOD.getText()):null);
-        db.registerNewParcel(sender, recipient, parcel);
+        Parcel parcel = new Parcel(pid, Integer.parseInt(newParcelWeight.getText()), transportComboBox.getSelectionModel().getSelectedIndex(), newParceTitle.getText(), newParcelNote.getText(), (codCheckBox.selectedProperty().get())?Integer.parseInt(newCOD.getText()):null);
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setHeaderText("Please confirm to register a new parcel");
+        alert.setContentText(null);
+        ButtonType option =  alert.showAndWait().get();
+        if(option==ButtonType.OK){
+            db.registerNewParcel(sender, recipient, parcel);
+            resetParcelTable();
+        }
+        clearNewParcel();
     }
 
 }

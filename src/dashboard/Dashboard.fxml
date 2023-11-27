@@ -149,7 +149,7 @@
                                     </Pane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="newParcelPane" layoutX="5.0" prefHeight="700.0" prefWidth="1060.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="newParcelPane" layoutX="5.0" prefHeight="700.0" prefWidth="1060.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane layoutX="14.0" layoutY="47.0" prefHeight="320.0" prefWidth="620.0">
                                        <children>
@@ -202,7 +202,7 @@
                                                       <Font name="Inter Regular" size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="senderZip" layoutX="20.0" layoutY="239.0" prefHeight="30.0" prefWidth="560.0">
+                                                <TextField fx:id="senderZip" layoutX="20.0" layoutY="239.0" onKeyTyped="#reCalculateBill" prefHeight="30.0" prefWidth="560.0">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -275,7 +275,7 @@
                                                       <Font name="Inter Regular" size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="recipientZip" layoutX="20.0" layoutY="229.0" prefHeight="30.0" prefWidth="560.0">
+                                                <TextField fx:id="recipientZip" layoutX="20.0" layoutY="229.0" onKeyTyped="#reCalculateBill" prefHeight="30.0" prefWidth="560.0">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -319,7 +319,7 @@
                                                       <Font name="Inter Regular" size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="newParcelWeight" layoutX="21.0" layoutY="203.0" prefHeight="30.0" prefWidth="155.0">
+                                                <TextField fx:id="newParcelWeight" layoutX="21.0" layoutY="203.0" onKeyTyped="#getParcelWeightRate" prefHeight="30.0" prefWidth="155.0">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -334,7 +334,7 @@
                                                       <Font size="14.0" />
                                                    </font>
                                                 </TextField>
-                                                <ComboBox fx:id="transportComboBox" layoutX="213.60000000000002" layoutY="200.0" prefHeight="35.0" prefWidth="155.0" AnchorPane.rightAnchor="20.0" />
+                                                <ComboBox fx:id="transportComboBox" layoutX="213.60000000000002" layoutY="200.0" onAction="#selectTransport" prefHeight="35.0" prefWidth="155.0" AnchorPane.rightAnchor="20.0" />
                                                 <Text layoutX="216.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transport Type:" wrappingWidth="114.13671875" AnchorPane.leftAnchor="216.0">
                                                    <font>
                                                       <Font name="Inter Regular" size="14.0" />
@@ -353,7 +353,7 @@
                                                             <Font name="Inter Regular" size="14.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="senderZipBill" alignment="CENTER_RIGHT" layoutX="140.0" layoutY="48.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
+                                                      <TextField fx:id="senderZipBill" alignment="CENTER_RIGHT" editable="false" layoutX="140.0" layoutY="48.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -363,7 +363,7 @@
                                                             <Font name="Inter Regular" size="14.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="recipientZipBill" alignment="CENTER_RIGHT" layoutX="140.0" layoutY="83.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
+                                                      <TextField fx:id="recipientZipBill" alignment="CENTER_RIGHT" editable="false" layoutX="140.0" layoutY="83.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -373,7 +373,7 @@
                                                             <Font name="Inter Regular" size="14.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="customerDistance" alignment="CENTER_RIGHT" layoutX="142.0" layoutY="135.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
+                                                      <TextField fx:id="customerDistance" alignment="CENTER_RIGHT" editable="false" layoutX="142.0" layoutY="135.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -383,7 +383,7 @@
                                                             <Font name="Inter Regular" size="14.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="transportFee" alignment="CENTER_RIGHT" layoutX="142.0" layoutY="170.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
+                                                      <TextField fx:id="transportFee" alignment="CENTER_RIGHT" editable="false" layoutX="142.0" layoutY="170.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -393,7 +393,7 @@
                                                             <Font name="Inter Regular" size="14.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="weightRate" alignment="CENTER_RIGHT" layoutX="142.0" layoutY="205.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
+                                                      <TextField fx:id="weightRate" alignment="CENTER_RIGHT" editable="false" layoutX="142.0" layoutY="205.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -403,7 +403,7 @@
                                                             <Font name="Inter Regular" size="14.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="totalFee" alignment="CENTER_RIGHT" layoutX="142.0" layoutY="262.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
+                                                      <TextField fx:id="totalFee" alignment="CENTER_RIGHT" editable="false" layoutX="142.0" layoutY="262.0" prefHeight="30.0" prefWidth="175.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@Default_Style.css">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -411,7 +411,7 @@
                                                       <Separator layoutX="34.0" layoutY="249.0" prefHeight="4.0" prefWidth="285.0" />
                                                    </children></AnchorPane>
                                                 <Button layoutX="40.0" layoutY="625.0" mnemonicParsing="false" onAction="#registerNewParcel" prefHeight="34.0" prefWidth="140.0" styleClass="tool-button" stylesheets="@Default_Style.css" text="Register" textFill="WHITE" AnchorPane.leftAnchor="40.0" />
-                                                <Button layoutX="208.8" layoutY="627.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="140.0" styleClass="tool-button" stylesheets="@Default_Style.css" text="Cancel" textFill="WHITE" AnchorPane.rightAnchor="40.0" />
+                                                <Button layoutX="208.8" layoutY="627.0" mnemonicParsing="false" onAction="#clearNewParcel" prefHeight="34.0" prefWidth="140.0" styleClass="tool-button" stylesheets="@Default_Style.css" text="Cancel" textFill="WHITE" AnchorPane.rightAnchor="40.0" />
                                                 <CheckBox layoutX="216.0" layoutY="248.0" mnemonicParsing="false" text="Get Notifications">
                                                    <font>
                                                       <Font name="Inter Regular" size="14.0" />
@@ -428,7 +428,7 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="searchPane" prefHeight="700.0" prefWidth="1060.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="searchPane" prefHeight="700.0" prefWidth="1060.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <VBox layoutX="31.0" layoutY="36.0" prefHeight="705.0" prefWidth="564.0" AnchorPane.bottomAnchor="37.60000000000002" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="464.19999999999993" AnchorPane.topAnchor="36.0">
                                        <children>
@@ -457,11 +457,11 @@
                                                 </Label>
                                                 <HBox prefHeight="22.0" prefWidth="309.0" spacing="7.0">
                                                    <children>
-                                                      <ComboBox fx:id="searchComboBox" onAction="#resetParcelTable" prefHeight="26.0" prefWidth="80.0">
+                                                      <ComboBox fx:id="searchComboBox" onAction="#resetParcelTable" prefHeight="26.0" prefWidth="91.0">
                                                          <HBox.margin>
                                                             <Insets left="10.0" />
                                                          </HBox.margin></ComboBox>
-                                                      <TextField fx:id="searchBar" onKeyTyped="#resetParcelTable" HBox.hgrow="ALWAYS">
+                                                      <TextField fx:id="searchBar" onKeyTyped="#resetParcelTable" prefHeight="27.0" prefWidth="270.0" HBox.hgrow="ALWAYS">
                                                          <HBox.margin>
                                                             <Insets left="8.0" right="10.0" />
                                                          </HBox.margin></TextField>
@@ -472,12 +472,12 @@
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT">
                                                    <children>
-                                                      <ComboBox fx:id="statusComboBox" onAction="#resetParcelTable" prefHeight="26.0" prefWidth="80.0" promptText="Status">
+                                                      <ComboBox fx:id="statusComboBox" onAction="#resetParcelTable" prefHeight="26.0" prefWidth="90.0" promptText="Status">
                                                          <HBox.margin>
                                                             <Insets left="10.0" />
                                                          </HBox.margin>
                                                       </ComboBox>
-                                                      <ComboBox fx:id="codComboBox" onAction="#resetParcelTable" prefHeight="26.0" prefWidth="74.0" promptText="COD">
+                                                      <ComboBox fx:id="codComboBox" onAction="#resetParcelTable" prefHeight="26.0" prefWidth="90.0" promptText="COD">
                                                          <HBox.margin>
                                                             <Insets left="16.0" />
                                                          </HBox.margin>
@@ -524,8 +524,8 @@
                                                 </Label>
                                                 <GridPane prefHeight="159.0" prefWidth="398.0">
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.2000732421875" minWidth="10.0" prefWidth="167.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="231.0" minWidth="10.0" prefWidth="231.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -533,21 +533,24 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                                                          <children>
                                                             <Label alignment="TOP_LEFT" text="Title">
                                                                <HBox.margin>
                                                                   <Insets />
                                                                </HBox.margin>
                                                             </Label>
-                                                            <TextField fx:id="parcelTitle">
+                                                            <TextField fx:id="parcelTitle" prefHeight="27.0" prefWidth="110.0">
                                                                <HBox.margin>
                                                                   <Insets left="8.0" />
                                                                </HBox.margin>
                                                             </TextField>
                                                          </children>
+                                                         <GridPane.margin>
+                                                            <Insets left="10.0" />
+                                                         </GridPane.margin>
                                                       </HBox>
-                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                          <children>
                                                             <Label alignment="TOP_LEFT" prefHeight="18.0" prefWidth="30.0" text="COD">
                                                                <HBox.margin>
@@ -559,6 +562,12 @@
                                                                   <Insets left="8.0" />
                                                                </HBox.margin>
                                                             </TextField>
+                                                            <Label alignment="TOP_LEFT" layoutX="10.0" layoutY="16.0" prefHeight="18.0" prefWidth="50.0" text="Weight">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <TextField fx:id="parcelWeight" editable="false" layoutX="48.0" layoutY="12.0" prefHeight="25.0" prefWidth="60.0" />
                                                          </children>
                                                       </HBox>
                                                       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
