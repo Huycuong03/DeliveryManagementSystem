@@ -4,9 +4,6 @@ import java.net.URL;
 import java.sql.Date;
 import java.util.ResourceBundle;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
