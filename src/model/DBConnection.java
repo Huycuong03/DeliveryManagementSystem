@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.*;
+import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -145,8 +146,6 @@ public class DBConnection {
         }
     }
 
-    private Alert alert = new Alert(null);
-
     public int getCountCustomer(){
         try {
             res = con.createStatement().executeQuery("select count(*) as num_customer from customer");
@@ -209,7 +208,7 @@ public class DBConnection {
             String sqlFormat = "insert into customer values(%d,'%s','%s','%s','%s',null,null,'%s')";
             return String.format(sqlFormat, customer.getId(),customer.getName(),customer.getPhoneNumber(),customer.getZip(),customer.getAddress(),customer.getEmail());           
         }else{
-            alert.setAlertType(AlertType.CONFIRMATION);
+            Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setHeaderText("Customer "+customer.getName()+"'s account already existed");
             alert.setContentText("Do you want to update customer's information?");
             if(alert.showAndWait().get()==ButtonType.OK){
@@ -218,6 +217,54 @@ public class DBConnection {
             }
         }       
         return null;
+    }
+
+    public TreeMap<String, Integer> getTransportRevenue(int month){
+        TreeMap<String, Integer> treeMap = new TreeMap<>();       
+        try{
+            state = con.prepareStatement("select title, revenue from transport natural join (select transport#, sum(payment)as revenue from parcel natural join sending where extract(month from send_date) = ? group by transport#)");
+            state.setInt(1, month);
+            res = state.executeQuery();
+            while(res.next()){
+                treeMap.put(res.getString("title"), res.getInt("revenue"));
+            }            
+        }catch(SQLException e){
+            e.printStackTrace();
+        }        
+        return treeMap;
+    }
+
+    public XYChart.Series<String, Integer> getWarehouseMonthlyParcel(int month){
+        XYChart.Series<String, Integer> dataSeries = new XYChart.Series<>();
+        try {
+            state = con.prepareStatement("select wh#,(num_parcel1+num_parcel2) as total_parcel " +
+                    "from(select wh#, count(parcel#) as num_parcel1 " + 
+                    "from employee inner join shipper on (employee# = shipper#) natural join delivery where extract(month from delivery_date) = ? group by wh#) " + 
+                    "natural join " + 
+                    "(select wh#, count(parcel#) as num_parcel2 from packing where extract(month from pack_date) = ? group by wh#)");
+            state.setInt(1, month);
+            state.setInt(2, month);
+            res = state.executeQuery();
+            while(res.next()){
+                dataSeries.getData().add(new XYChart.Data<String, Integer>(res.getString("wh#"), res.getInt("total_parcel")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dataSeries;
+    }
+
+    public String getTotalMonthlyRevenue(int month){
+        try {
+            state = con.prepareStatement("select sum(payment) as revenue from sending where extract(month from send_date) = ?");
+            state.setInt(1, month);
+            res = state.executeQuery();
+            res.next();
+            return String.format("%dM", res.getInt("revenue")/1_000_000);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "NaN";       
     }
 
 }

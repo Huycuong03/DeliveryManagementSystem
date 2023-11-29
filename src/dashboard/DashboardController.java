@@ -2,14 +2,19 @@ package dashboard;
 
 import java.net.URL;
 import java.sql.Date;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -119,7 +124,7 @@ public class DashboardController implements Initializable{
     private TextField recipientZipBill;
 
     @FXML
-    private AnchorPane reportPane;
+    private AnchorPane analysisPane;
 
     @FXML
     private TextField searchBar;
@@ -164,6 +169,9 @@ public class DashboardController implements Initializable{
     private Text totalParcel;
 
     @FXML
+    private Text totalParcel1;
+
+    @FXML
     private TableColumn<TrackingLog, String> trackDstColumn;
 
     @FXML
@@ -185,24 +193,34 @@ public class DashboardController implements Initializable{
     private PieChart transportRevenueChart;
 
     @FXML
+    private BarChart<String, Integer> warehouseRevenueChart;
+
+    @FXML
     private TextField weightRate;
 
     @FXML
     private TextField parcelWeight;
 
+    @FXML
+    private Text totalMonthlyRevenue;
+
     private DBConnection db = new DBConnection();
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        initComboBox();
         newCOD.disableProperty().bind(codCheckBox.selectedProperty().not());
         senderZipBill.textProperty().bind(senderZip.textProperty());
         recipientZipBill.textProperty().bind(recipientZip.textProperty());
-        selectTransport();
-        getParcelWeightRate();
-        resetHomePane();
+        totalParcel1.textProperty().bind(totalParcel.textProperty());
+
+
+        initComboBox();
         initParcelTable();
         initTrackingTable();
+
+        selectTransport();
+        getParcelWeightRate();
+        resetAsMonth();
     }
 
     public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
@@ -254,6 +272,45 @@ public class DashboardController implements Initializable{
 
 // Event Handling
 
+public void resetAsMonth(){
+    resetHomePane();
+    resetAnalysisPane();
+}
+
+// Left Menu
+    public void toHomePane(){
+        homePane.setVisible(true);
+        monthComboBox.setVisible(true);
+        newParcelPane.setVisible(false);
+        searchPane.setVisible(false);
+        analysisPane.setVisible(false);
+    }
+
+    public void toNewParcelPane(){
+        homePane.setVisible(false);
+        monthComboBox.setVisible(false);
+        newParcelPane.setVisible(true);
+        searchPane.setVisible(false);
+        analysisPane.setVisible(false);
+    }
+
+    public void toSearchPane(){
+        homePane.setVisible(false);
+        monthComboBox.setVisible(false);
+        newParcelPane.setVisible(false);
+        searchPane.setVisible(true);
+        analysisPane.setVisible(false);
+    }
+
+    public void toAnalysisPane(){
+        homePane.setVisible(false);
+        monthComboBox.setVisible(true);
+        newParcelPane.setVisible(false);
+        searchPane.setVisible(false);
+        analysisPane.setVisible(true);
+    }
+
+// Home pane
     public void resetHomePane(){
         int month = monthComboBox.getSelectionModel().getSelectedIndex()+1;
         totalParcel.setText(db.getTotalParcel(month));
@@ -264,38 +321,7 @@ public class DashboardController implements Initializable{
         parcelPerDayChart.getData().add(db.getParcelPerDayData(month));
     }
 
-    public void toHomePane(){
-        homePane.setVisible(true);
-        monthComboBox.setVisible(true);
-        newParcelPane.setVisible(false);
-        searchPane.setVisible(false);
-        reportPane.setVisible(false);
-    }
-
-    public void toNewParcelPane(){
-        homePane.setVisible(false);
-        monthComboBox.setVisible(false);
-        newParcelPane.setVisible(true);
-        searchPane.setVisible(false);
-        reportPane.setVisible(false);
-    }
-
-    public void toSearchPane(){
-        homePane.setVisible(false);
-        monthComboBox.setVisible(false);
-        newParcelPane.setVisible(false);
-        searchPane.setVisible(true);
-        reportPane.setVisible(false);
-    }
-
-    public void toReportPane(){
-        homePane.setVisible(false);
-        monthComboBox.setVisible(true);
-        newParcelPane.setVisible(false);
-        searchPane.setVisible(false);
-        reportPane.setVisible(true);
-    }
-
+// Search Pane
     public void resetParcelTable(){
         int searchOption = searchComboBox.getSelectionModel().getSelectedIndex();
         int statusFilterOption = statusComboBox.getSelectionModel().getSelectedIndex();
@@ -372,10 +398,6 @@ public class DashboardController implements Initializable{
         resetParcelTable();
     }
 
-    public void enableCOD(){
-        parcelCOD.setDisable(false);
-    }
-
     public void selectTransport(){
         transportFee.setText(String.valueOf((transportComboBox.getSelectionModel().getSelectedIndex()+1)*100));
         reCalculateBill();
@@ -399,6 +421,7 @@ public class DashboardController implements Initializable{
         }
     }
 
+// New Parcel
     public boolean isFilledForm(){
         if(senderFirstName.getText().isBlank()) return false;
         if(senderLastName.getText().isBlank()) return false;
@@ -463,7 +486,15 @@ public class DashboardController implements Initializable{
             alert.setContentText("Invalid value for COD");
             alert.show();
             return false;
-        }       
+        }  
+        
+        if(senderFirstName.getText().equals(recipientFirstName.getText())
+        &&senderLastName.getText().equals(recipientLastName.getText())
+        &&senderPhoneNumber.getText().equals(recipientPhoneNumber.getText())){
+            alert.setContentText("Sender and Recipient are one customer");
+            alert.show();
+            return false;
+        }
 
         return true;
     }
@@ -513,6 +544,21 @@ public class DashboardController implements Initializable{
             resetParcelTable();
         }
         clearNewParcel();
+    }
+
+// Analysis Pane
+    public void resetAnalysisPane(){
+        int month = monthComboBox.getSelectionModel().getSelectedIndex()+1;
+
+        transportRevenueChart.getData().clear();
+        for (Map.Entry<String, Integer> entry : db.getTransportRevenue(month).entrySet()){
+            transportRevenueChart.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
+
+        warehouseRevenueChart.getData().clear();
+        warehouseRevenueChart.getData().add(db.getWarehouseMonthlyParcel(month));
+
+        totalMonthlyRevenue.setText(db.getTotalMonthlyRevenue(month));
     }
 
 }

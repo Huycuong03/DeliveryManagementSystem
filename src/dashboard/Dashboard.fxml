@@ -2,6 +2,7 @@
 
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -46,14 +47,14 @@
                         <Button layoutX="10.0" layoutY="223.0" mnemonicParsing="false" onAction="#toHomePane" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Home" />
                         <Button layoutX="10.0" layoutY="268.0" mnemonicParsing="false" onAction="#toNewParcelPane" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="New Parcel" />
                         <Button layoutX="10.0" layoutY="313.0" mnemonicParsing="false" onAction="#toSearchPane" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Search" />
-                        <Button layoutX="10.0" layoutY="358.0" mnemonicParsing="false" onAction="#toReportPane" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Report" />
+                        <Button layoutX="10.0" layoutY="358.0" mnemonicParsing="false" onAction="#toAnalysisPane" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Analysis" />
                         <Button layoutX="10.0" layoutY="593.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Setting" />
                         <Button layoutX="10.0" layoutY="638.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Help" />
                         <Line endX="81.5" layoutX="109.0" layoutY="678.0" startX="-100.0" stroke="WHITE" />
                         <Button layoutX="27.0" layoutY="694.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="147.0" styleClass="nav-btn" stylesheets="@Default_Style.css" text="Log out" />
                         <ImageView fitHeight="120.0" fitWidth="120.0" layoutX="45.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@default_user_img.png" />
+                              <Image url="@../images/default_user_img.png" />
                            </image></ImageView>
                      </children>
                   </AnchorPane>
@@ -87,7 +88,7 @@
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Text>
-                                                      <Text fx:id="totalParcel" fill="WHITE" layoutX="46.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="238.6875">
+                                                      <Text fx:id="totalParcel" fill="WHITE" layoutX="32.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="238.6875">
                                                          <font>
                                                             <Font name="Segoe UI Bold" size="77.0" />
                                                          </font>
@@ -101,7 +102,7 @@
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Text>
-                                                      <Text fx:id="deliveredParcel" fill="WHITE" layoutX="39.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="253.6875">
+                                                      <Text fx:id="deliveredParcel" fill="WHITE" layoutX="14.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="253.6875">
                                                          <font>
                                                             <Font name="Segoe UI Bold" size="77.0" />
                                                          </font>
@@ -118,7 +119,7 @@
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Text>
-                                                      <Text fx:id="deliveringParcel" fill="WHITE" layoutX="28.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="263.28125">
+                                                      <Text fx:id="deliveringParcel" fill="WHITE" layoutX="7.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="263.28125">
                                                          <font>
                                                             <Font name="Segoe UI Bold" size="77.0" />
                                                          </font>
@@ -636,23 +637,143 @@
                                     </VBox>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="reportPane" layoutX="10.0" layoutY="10.0" prefHeight="767.0" prefWidth="1048.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                              <AnchorPane fx:id="analysisPane" layoutX="10.0" layoutY="10.0" prefHeight="767.0" prefWidth="1048.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                  <children>
-                                    <ScrollPane layoutX="7.0" prefHeight="754.0" prefWidth="1034.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <ScrollPane hbarPolicy="NEVER" layoutX="492.8" layoutY="98.4" prefHeight="625.0" prefWidth="510.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="493.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="98.0">
                                        <content>
-                                          <AnchorPane prefHeight="756.0" prefWidth="1010.0">
+                                          <AnchorPane prefHeight="950.0" prefWidth="432.0">
                                              <children>
-                                                <Pane layoutX="14.0" layoutY="14.0" prefHeight="739.0" prefWidth="638.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0">
+                                                <VBox prefHeight="950.0" prefWidth="510.0" spacing="30.0">
                                                    <children>
-                                                      <PieChart fx:id="transportRevenueChart" labelsVisible="false" layoutX="43.0" layoutY="27.0" legendSide="LEFT" prefHeight="325.0" prefWidth="551.0" stylesheets="@Default_Style.css" title="Fee for each transportaion type" />
+                                                      <Pane prefHeight="150.0" prefWidth="305.0" styleClass="card" stylesheets="@Default_Style.css">
+                                                         <children>
+                                                            <Text fill="WHITE" layoutX="14.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" styleClass="header-label" text="Total Number Parcel" wrappingWidth="137.17327880859375">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Text fx:id="totalParcel1" fill="WHITE" layoutX="211.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-bold" text="Te" textAlignment="RIGHT" wrappingWidth="238.6875">
+                                                               <font>
+                                                                  <Font name="Segoe UI Bold" size="77.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </Pane>
+                                                      <AnchorPane prefHeight="298.0" prefWidth="420.0" styleClass="card" stylesheets="@Default_Style.css">
+                                                         <children>
+                                                            <BarChart fx:id="warehouseRevenueChart" alternativeColumnFillVisible="true" categoryGap="0.0" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="300.0" prefWidth="511.0" title="Parcel at Warehouse">
+                                                              <xAxis>
+                                                                <CategoryAxis prefHeight="24.0" prefWidth="373.0" side="BOTTOM" style="-fx-tick-label-fill: white;" />
+                                                              </xAxis>
+                                                              <yAxis>
+                                                                <NumberAxis side="LEFT" style="-fx-tick-label-fill: white;" />
+                                                              </yAxis>
+                                                               <padding>
+                                                                  <Insets top="20.0" />
+                                                               </padding>
+                                                            </BarChart>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="card" stylesheets="@Default_Style.css">
+                                                         <children>
+                                                            <PieChart fx:id="transportRevenueChart" legendSide="RIGHT" legendVisible="false" prefHeight="300.0" prefWidth="511.0" stylesheets="@Default_Style.css" title="Revenue as Transport">
+                                                               <padding>
+                                                                  <Insets top="20.0" />
+                                                               </padding>
+                                                            </PieChart>
+                                                         </children>
+                                                      </AnchorPane>
                                                    </children>
-                                                </Pane>
+                                                </VBox>
                                              </children>
                                           </AnchorPane>
                                        </content>
                                     </ScrollPane>
+                                    <VBox layoutX="40.0" layoutY="98.0" prefHeight="322.0" prefWidth="369.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #505050; -fx-font-size: 24;" styleClass="header-label" text="THIS MONTH TOTAL REVENUE IS" textAlignment="CENTER" wrappingWidth="397.8101806640625" />
+                                          <Text fx:id="totalMonthlyRevenue" fill="#a75d5d" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 80;" styleClass="header-label" text="250M" textAlignment="CENTER" wrappingWidth="398.1367645263672">
+                                             <font>
+                                                <Font size="80.0" />
+                                             </font>
+                                          </Text>
+                                          <Separator prefWidth="200.0" />
+                                          <HBox layoutX="10.0" layoutY="226.0" prefHeight="24.0" prefWidth="446.0">
+                                             <children>
+                                                <Label prefHeight="24.0" prefWidth="15.0" style="-fx-font-size: 14;" styleClass="header-label" text="1." />
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14; -fx-font-family: Segoe UI;" text="Revenue increase by:">
+                                                   <HBox.margin>
+                                                      <Insets left="20.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14;" styleClass="header-label" text="12%" wrappingWidth="133.20508575439453">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="30.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="220.0" prefHeight="24.0" prefWidth="380.0">
+                                             <children>
+                                                <Label prefHeight="24.0" prefWidth="15.0" style="-fx-font-size: 14;" styleClass="header-label" text="2." />
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14; -fx-font-family: Segoe UI;" text="Total number of parcels increase by:">
+                                                   <HBox.margin>
+                                                      <Insets left="20.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14;" styleClass="header-label" text="30%" wrappingWidth="133.20508575439453">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="198.0" prefHeight="24.0" prefWidth="446.0">
+                                             <children>
+                                                <Label prefHeight="24.0" prefWidth="15.0" style="-fx-font-size: 14;" styleClass="header-label" text="3." />
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14; -fx-font-family: Segoe UI;" text="Warehouse with the most parcel:">
+                                                   <HBox.margin>
+                                                      <Insets left="20.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14;" styleClass="header-label" text="WH09" wrappingWidth="133.20508575439453">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="222.0" prefHeight="24.0" prefWidth="446.0">
+                                             <children>
+                                                <Label prefHeight="24.0" prefWidth="15.0" style="-fx-font-size: 14;" styleClass="header-label" text="4." />
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14; -fx-font-family: Segoe UI;" text="Transport with the highest revenue:">
+                                                   <HBox.margin>
+                                                      <Insets left="20.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                                <Text fill="#505050" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14;" styleClass="header-label" text="INSTANT" wrappingWidth="133.20508575439453">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
                                  </children></AnchorPane>
-                              <ComboBox fx:id="monthComboBox" layoutX="847.0" layoutY="26.0" onAction="#resetHomePane" prefHeight="35.0" prefWidth="166.0" />
+                              <ComboBox fx:id="monthComboBox" layoutX="847.0" layoutY="26.0" onAction="#resetAsMonth" prefHeight="35.0" prefWidth="166.0" />
                            </children></AnchorPane>
                      </children>
                   </AnchorPane>
