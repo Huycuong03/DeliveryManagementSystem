@@ -241,7 +241,7 @@ public class DBConnection {
                     "from(select wh#, count(parcel#) as num_parcel1 " + 
                     "from employee inner join shipper on (employee# = shipper#) natural join delivery where extract(month from delivery_date) = ? group by wh#) " + 
                     "natural join " + 
-                    "(select wh#, count(parcel#) as num_parcel2 from packing where extract(month from pack_date) = ? group by wh#)");
+                    "(select wh#, count(parcel#) as num_parcel2 from packing where extract(month from pack_date) = ? group by wh#) order by wh#");
             state.setInt(1, month);
             state.setInt(2, month);
             res = state.executeQuery();
